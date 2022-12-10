@@ -50,7 +50,13 @@ int main()
             token.push_back("+");
         }
         else if (s[i] == '-' && condition == "start"){
+            now = "-";
+            condition = "-";
+        }
+        else if (in({' ', ')'}, s[i]) && condition == "-"){
             token.push_back("-");
+            now = "";
+            condition = "start";
         }
         else if (s[i] == '*' && condition == "start"){
             token.push_back("*");
@@ -90,7 +96,46 @@ int main()
             buf_float = 0;
             i--;
         }
+        else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "-"){
+            buf_int = buf_int * 10 - (int(s[i]) - int('0'));
+            condition = "-int";
+        }
+        else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "-int"){
+            buf_int = buf_int * 10 - (int(s[i]) - int('0'));
+        }
+        else if (s[i] == '.'  && condition == "-int"){
+            buf_float = buf_int;
+            buf_int = 10;
+            condition = "-float";
+        }
+        else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "-float"){
+            buf_float -= float(int(s[i]) - int('0'))/ buf_int;
+            buf_int *= 10;
+        }
+        else if (in({' ', ')'}, s[i]) && condition == "-int"){
+            id_name = "-0" + to_string(count_number);
+            count_number ++;
+            token.push_back(id_name);
+            condition = "start";
+            number_table[id_name] = buf_int;
+            buf_int = 0;
+            i--;
+        }
+        else if (in({' ', ')'}, s[i]) && condition == "-float"){
+            id_name = "-0" + to_string(count_number);
+            count_number ++;
+            token.push_back(id_name);
+            condition = "start";
+            number_table[id_name] = buf_float;
+            buf_int = 0;
+            buf_float = 0;
+            i--;
+        }
         else if (!in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && (condition == "int" || condition == "float")){
+            cout << "error wrong name\n";
+            return -1;
+        }
+        else if (!in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && (condition == "-int" || condition == "-float")){
             cout << "error wrong name\n";
             return -1;
         }
