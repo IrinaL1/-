@@ -30,6 +30,7 @@ int main()
     map <string, float> number_table;
     int i = 0, count_name = 1, count_number = 1, buf_int = 0;
     float buf_float;
+    vector <string> special_names = {"defun", "print", "setq", "cond"};
     vector <string> conditions = {"name",
         "d", "de", "def", "defu", "defun",
         "T",
