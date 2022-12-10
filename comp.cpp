@@ -25,12 +25,12 @@ int main()
 {
     string s, condition = "start", now = "", id_name;
     getline(cin, s);
-    vector <string> token;
+    vector <string> token;                  
     map <string, string> name_table;
     map <string, float> number_table;
     int i = 0, count_name = 1, count_number = 1, buf_int = 0;
     float buf_float;
-    vector <string> special_names = {"defun", "print", "setq", "cond"};
+    vector <string> special_names = {"defun", "print", "setq", "cond", "car", "cdr", "t", "nil"};
     vector <string> conditions = {"name",
         "d", "de", "def", "defu", "defun",
         "T",
@@ -55,15 +55,12 @@ int main()
         else if (s[i] == '*' && condition == "start"){
             token.push_back("*");
         }
-        else if (s[i] == ')' && condition == "start"){
-            token.push_back(")");
-        }
         else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "start"){
-            buf_int = buf_int*10 + int(s[i]);
+            buf_int = buf_int * 10 + int(s[i]);
             condition = "int";
         }
         else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "int"){
-            buf_int = buf_int*10 + int(s[i]);
+            buf_int = buf_int * 10 + int(s[i]);
         }
         else if (s[i] == '.'  && condition == "int"){
             buf_float = buf_int;
@@ -222,6 +219,7 @@ int main()
     }
     cout << token.size() << '\n';
     for(i = 0; i < token.size(); i++) cout << token[i] << ' ';
-    
+    cout << number_table["-01"] << '\n';
+
     return 0;
 }
