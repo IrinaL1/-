@@ -23,15 +23,20 @@ bool in(vector <string> a, string b){
 
 int main()
 {
-    string s, condition = "s", now = "", id_name;
+    string s, condition = "start", now = "", id_name;
     getline(cin, s);
     vector <string> token;
     map <string, string> name_table;
-    int i = 0, count_name = 1;
+    map <string, float> number_table;
+    int i = 0, count_name = 1, count_number = 1, buf_int = 0;
+    float buf_float;
     vector <string> conditions = {"name",
         "d", "de", "def", "defu", "defun",
         "T",
-        "N", "NI", "NIL", "p", "pr", "pri", "prin", "print"};
+        "N", "NI", "NIL",
+        "p", "pr", "pri", "prin", "print",
+        "s", "se", "set", "setq" 
+    };
     
     while (i != s.size() && s[i] != '\n'){
         if (s[i] == '(' && condition == "start"){
@@ -51,6 +56,45 @@ int main()
         }
         else if (s[i] == ')' && condition == "start"){
             token.push_back(")");
+        }
+        else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "start"){
+            buf_int = buf_int*10 + int(s[i]);
+            condition = "int";
+        }
+        else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "int"){
+            buf_int = buf_int*10 + int(s[i]);
+        }
+        else if (s[i] == '.'  && condition == "int"){
+            buf_float = buf_int;
+            buf_int = 10;
+            condition = "float";
+        }
+        else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "float"){
+            buf_float += int(s[i])/ buf_int;
+            buf_int *= 10;
+        }
+        else if (in({' ', ')'}, s[i]) && condition == "int"){
+            id_name = "-0" + to_string(count_number);
+            count_number ++;
+            token.push_back(id_name);
+            condition = "start";
+            number_table[id_name] = buf_int;
+            buf_int = 0;
+            i--;
+        }
+        else if (in({' ', ')'}, s[i]) && condition == "float"){
+            id_name = "-0" + to_string(count_number);
+            count_number ++;
+            token.push_back(id_name);
+            condition = "start";
+            number_table[id_name] = buf_float;
+            buf_int = 0;
+            buf_float = 0;
+            i--;
+        }
+        else if (!in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && (condition == "int" || condition == "float")){
+            cout << "error wrong name\n";
+            return -1;
         }
         else if (s[i] == 'p' && condition == "start"){
             now += "p";
@@ -74,6 +118,27 @@ int main()
         }
         else if (s[i] == ' ' && condition == "print"){
             token.push_back("2");
+            now = "";
+            condition = "start";
+        }
+        else if (s[i] == 's' && condition == "start"){
+            now += "s";
+            condition = "s";
+        }
+        else if (s[i] == 'e' && condition == "s"){
+            now += "e";
+            condition = "se";
+        }
+        else if (s[i] == 't' && condition == "se"){
+            now += "t";
+            condition = "set";
+        }
+        else if (s[i] == 'q' && condition == "set"){
+            now += "q";
+            condition = "setq";
+        }
+        else if (s[i] == ' ' && condition == "setq"){
+            token.push_back("3");
             now = "";
             condition = "start";
         }
@@ -156,5 +221,6 @@ int main()
     }
     cout << token.size() << '\n';
     for(i = 0; i < token.size(); i++) cout << token[i] << ' ';
+    
     return 0;
 }
