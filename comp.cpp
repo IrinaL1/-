@@ -56,11 +56,11 @@ int main()
             token.push_back("*");
         }
         else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "start"){
-            buf_int = buf_int * 10 + int(s[i]);
+            buf_int = buf_int * 10 + (int(s[i]) - int('0'));
             condition = "int";
         }
         else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "int"){
-            buf_int = buf_int * 10 + int(s[i]);
+            buf_int = buf_int * 10 + (int(s[i]) - int('0'));
         }
         else if (s[i] == '.'  && condition == "int"){
             buf_float = buf_int;
@@ -68,7 +68,7 @@ int main()
             condition = "float";
         }
         else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "float"){
-            buf_float += int(s[i])/ buf_int;
+            buf_float += (int(s[i]) - int('0'))/ buf_int;
             buf_int *= 10;
         }
         else if (in({' ', ')'}, s[i]) && condition == "int"){
