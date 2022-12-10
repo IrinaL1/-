@@ -30,7 +30,7 @@ int main()
     map <string, float> number_table;
     int i = 0, count_name = 1, count_number = 1, buf_int = 0;
     float buf_float;
-    vector <string> special_names = {"defun", "print", "setq", "cond", "car", "cdr", "t", "nil"};
+    vector <string> special_names = {"defun"/*токен = 3*/, "print"/*токен = 1*/, "setq"/*токен = 2*/, "cond", "car", "cdr", "t"/*токен = Т*/, "nil"/*токен = 4*/};
     vector <string> conditions = {"name",
         "d", "de", "def", "defu", "defun",
         "T",
@@ -68,7 +68,7 @@ int main()
             condition = "float";
         }
         else if (in({'0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "float"){
-            buf_float += (int(s[i]) - int('0'))/ buf_int;
+            buf_float += float(int(s[i]) - int('0'))/ buf_int;
             buf_int *= 10;
         }
         else if (in({' ', ')'}, s[i]) && condition == "int"){
@@ -115,7 +115,7 @@ int main()
             condition = "print";
         }
         else if (s[i] == ' ' && condition == "print"){
-            token.push_back("2");
+            token.push_back("1");
             now = "";
             condition = "start";
         }
@@ -136,7 +136,7 @@ int main()
             condition = "setq";
         }
         else if (s[i] == ' ' && condition == "setq"){
-            token.push_back("3");
+            token.push_back("2");
             now = "";
             condition = "start";
         }
@@ -161,7 +161,7 @@ int main()
             condition = "defun";
         }
         else if (s[i] == ' ' && condition == "defun"){
-            token.push_back("1");
+            token.push_back("3");
             now = "";
             condition = "start";
         }
@@ -187,10 +187,11 @@ int main()
             condition = "NIL";
         }
         else if (in({' ', ')'}, s[i]) && condition == "NIL"){
-            token.push_back("2");
+            token.push_back("4");
             now = "";
             condition = "start";
         }
+        //Новые разборы спец слов вводить после этой строки, токены заняты от 1 до 4
         else if (in({' ', ')'}, s[i]) && in(conditions, condition)){
             if (name_table.count(now) > 0){
                 token.push_back(name_table[now]);
@@ -207,7 +208,7 @@ int main()
             }
             i--;
         }
-        else if (!in({' ','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "start"){
+        else if (!in({' ','0','1','2','3','4','5','6','7','8','9'}, s[i]) && condition == "start"){
             now += s[i];
             condition = "name";
         }
@@ -217,9 +218,15 @@ int main()
         }
         i++;
     }
-    cout << token.size() << '\n';
+    //Вывод количества токенов
+    cout << token.size() << '\n' << '\n';
+    //Вывод самих токенов
     for(i = 0; i < token.size(); i++) cout << token[i] << ' ';
-    cout << number_table["-01"] << '\n';
-
+    cout << endl;
+    //Вывод чисел в number_table
+    map <string, float> :: iterator it = number_table.begin();
+    for (i = 0; it != number_table.end(); it++, i++) {  // выводим их
+        cout << i << ") Ключ " << it->first << ", значение " << it->second << endl;
+    }
     return 0;
 }
