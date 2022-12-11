@@ -5,49 +5,56 @@
 #include <utility>
 #include <vector>
 
-
 using namespace std;
 
-bool in(vector <char> a, char b){
-    for(int i = 0; i < a.size(); i++){
-        if (a[i] == b) return true;
+bool in(vector<char> a, char b)
+{
+    for (int i = 0; i < a.size(); i++)
+    {
+        if (a[i] == b)
+            return true;
     }
-    return false; 
+    return false;
 }
 
-bool in(vector <string> a, string b){
-    for(int i = 0; i < a.size(); i++){
-        if (a[i] == b) return true;
+bool in(vector<string> a, string b)
+{
+    for (int i = 0; i < a.size(); i++)
+    {
+        if (a[i] == b)
+            return true;
     }
-    return false; 
+    return false;
 }
 
 int main()
 {
     string s, condition = "start", now = "", id_name;
-    vector <string> token;                  
-    map <string, string> name_table;
-    map <string, float> number_table;
+    vector<string> token;
+    map<string, string> name_table;
+    map<string, float> number_table;
     int i = 0, count_name = 1, count_number = 1, buf_int = 0;
     float buf_float;
-    vector <string> special_names = {"defun"/*токен = 3*/, "print"/*токен = 1*/, "setq"/*токен = 2*/, "cond"/*токен 7*/, "car"/*токен 5*/, "cdr"/*токен 6*/, "t"/*токен = Т*/, "nil"/*токен = 4*/};
-    vector <string> conditions = {"name",
-        "d", "de", "def", "defu", "defun",
-        "T",
-        "N", "NI", "NIL",
-        "p", "pr", "pri", "prin", "print",
-        "s", "se", "set", "setq", 
-        "c", "ca", "car",
-        "cd", "cdr",
-        "co", "con", "cond"
-    };
+    vector<string> special_names = {"defun" /*токен = 3*/, "print" /*токен = 1*/, "setq" /*токен = 2*/, "cond" /*токен 7*/, "car" /*токен 5*/, "cdr" /*токен 6*/, "t" /*токен = Т*/, "nil" /*токен = 4*/};
+    vector<string> conditions = {"name",
+                                 "d", "de", "def", "defu", "defun",
+                                 "T",
+                                 "N", "NI", "NIL",
+                                 "p", "pr", "pri", "prin", "print",
+                                 "s", "se", "set", "setq",
+                                 "c", "ca", "car",
+                                 "cd", "cdr",
+                                 "co", "con", "cond"};
     ifstream file("input.txt");
-    if (!file){
+    if (!file)
+    {
         cout << "Ошибка: файл не открылся\n";
-        return -1; 
+        return -1;
     }
-    else {
-        while (!file.eof()){
+    else
+    {
+        while (!file.eof())
+        {
             getline(file, s);
             cout << s << '\n';
             i = 0;
@@ -68,6 +75,52 @@ int main()
                 else if (s[i] == '\'' && condition == "start")
                 {
                     token.push_back("'");
+                }
+                else if (s[i] == '<' && condition == "start")
+                {
+                    condition = "<";
+                }
+                else if (s[i] == '=' && condition == "<") 
+                {
+                    token.push_back("<=");
+                    condition = "start";
+                }
+                else if (s[i] != '=' && condition == "<")
+                {
+                    token.push_back("<");
+                    condition = "start";
+                }
+                else if (s[i] == '>' && condition == "start")
+                {
+                    condition = ">";
+                }
+                else if (s[i] == '=' && condition == ">") 
+                {
+                    token.push_back(">=");
+                    condition = "start";
+                }
+                else if (s[i] != '=' && condition == ">")
+                {
+                    token.push_back(">");
+                    condition = "start";
+                }
+                else if (s[i] == '/' && condition == "start")
+                {
+                    condition = "/";
+                }
+                else if (s[i] == '=' && condition == "/")
+                {
+                    token.push_back("/=");
+                    condition = "start";
+                }
+                else if (s[i] != '=' && condition == "/")
+                {
+                    token.push_back("/");
+                    condition = "start";
+                }
+                else if (s[i] == '=' && condition == "start")
+                {
+                    token.push_back("=");
                 }
                 else if (s[i] == '-' && condition == "start")
                 {
@@ -389,14 +442,17 @@ int main()
         }
     }
     file.close();
-    //Вывод количества токенов
-    cout << token.size() << '\n' << '\n';
-    //Вывод самих токенов
-    for(i = 0; i < token.size(); i++) cout << token[i] << ' ';
+    // Вывод количества токенов
+    cout << token.size() << '\n'
+         << '\n';
+    // Вывод самих токенов
+    for (i = 0; i < token.size(); i++)
+        cout << token[i] << ' ';
     cout << endl;
-    //Вывод чисел в number_table
-    map <string, float> :: iterator it = number_table.begin();
-    for (i = 0; it != number_table.end(); it++, i++) {  // выводим их
+    // Вывод чисел в number_table
+    map<string, float>::iterator it = number_table.begin();
+    for (i = 0; it != number_table.end(); it++, i++)
+    { // выводим их
         cout << i << ") Ключ " << it->first << ", значение " << it->second << endl;
     }
     return 0;
