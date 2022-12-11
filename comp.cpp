@@ -36,7 +36,10 @@ int main()
         "T",
         "N", "NI", "NIL",
         "p", "pr", "pri", "prin", "print",
-        "s", "se", "set", "setq" 
+        "s", "se", "set", "setq", 
+        "c", "ca", "car",
+        "cd", "cdr",
+        "co", "con", "cond"
     };
     ifstream file("input.txt");
     if (!file){
@@ -47,6 +50,7 @@ int main()
         while (!file.eof()){
             getline(file, s);
             cout << s << '\n';
+            i = 0;
             while (i != s.size() && s[i] != '\n')
             {
                 if (s[i] == '(' && condition == "start")
