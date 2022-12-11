@@ -127,7 +127,7 @@ int main()
                     now = "-";
                     condition = "-";
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "-")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "-")
                 {
                     token.push_back("-");
                     now = "";
@@ -157,7 +157,7 @@ int main()
                     buf_float += float(int(s[i]) - int('0')) / buf_int;
                     buf_int *= 10;
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "int")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "int")
                 {
                     id_name = "-0" + to_string(count_number);
                     count_number++;
@@ -167,7 +167,7 @@ int main()
                     buf_int = 0;
                     i--;
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "float")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "float")
                 {
                     id_name = "-0" + to_string(count_number);
                     count_number++;
@@ -198,7 +198,7 @@ int main()
                     buf_float -= float(int(s[i]) - int('0')) / buf_int;
                     buf_int *= 10;
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "-int")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "-int")
                 {
                     id_name = "-0" + to_string(count_number);
                     count_number++;
@@ -208,7 +208,7 @@ int main()
                     buf_int = 0;
                     i--;
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "-float")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "-float")
                 {
                     id_name = "-0" + to_string(count_number);
                     count_number++;
@@ -254,7 +254,7 @@ int main()
                     now += "t";
                     condition = "print";
                 }
-                else if (s[i] == ' ' && condition == "print")
+                else if (in({' ', ';'}, s[i]) && condition == "print")
                 {
                     token.push_back("1");
                     now = "";
@@ -280,7 +280,7 @@ int main()
                     now += "q";
                     condition = "setq";
                 }
-                else if (s[i] == ' ' && condition == "setq")
+                else if (in({' ', ';'}, s[i]) && condition == "setq")
                 {
                     token.push_back("2");
                     now = "";
@@ -311,7 +311,7 @@ int main()
                     now += 'n';
                     condition = "defun";
                 }
-                else if (s[i] == ' ' && condition == "defun")
+                else if (in({' ', ';'}, s[i]) && condition == "defun")
                 {
                     token.push_back("3");
                     now = "";
@@ -322,7 +322,7 @@ int main()
                     now += 'T';
                     condition = "T";
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "T")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "T")
                 {
                     token.push_back("T");
                     now = "";
@@ -343,7 +343,7 @@ int main()
                     now += 'L';
                     condition = "NIL";
                 }
-                else if (in({' ', ')'}, s[i]) && condition == "NIL")
+                else if (in({' ', ')', ';'}, s[i]) && condition == "NIL")
                 {
                     token.push_back("4");
                     now = "";
@@ -364,7 +364,7 @@ int main()
                     now += 'r';
                     condition = "car";
                 }
-                else if (in({' '}, s[i]) && condition == "car")
+                else if (in({' ', ';'}, s[i]) && condition == "car")
                 {
                     token.push_back("5");
                     now = "";
@@ -380,7 +380,7 @@ int main()
                     now += 'r';
                     condition = "cdr";
                 }
-                else if (in({' '}, s[i]) && condition == "cdr")
+                else if (in({' ', ';'}, s[i]) && condition == "cdr")
                 {
                     token.push_back("6");
                     now = "";
@@ -401,14 +401,15 @@ int main()
                     now += 'd';
                     condition = "cond";
                 }
-                else if (in({' ', '('}, s[i]) && condition == "cond")
+                else if (in({' ', '(', ';'}, s[i]) && condition == "cond")
                 {
                     token.push_back("7");
                     now = "";
                     condition = "start";
+                    i--;
                 }
                 // Новые разборы спец слов вводить после этой строки, токены заняты от 1 до 4
-                else if (in({' ', ')'}, s[i]) && in(conditions, condition))
+                else if (in({' ', ')', ';'}, s[i]) && in(conditions, condition))
                 {
                     if (name_table.count(now) > 0)
                     {
@@ -432,10 +433,17 @@ int main()
                     now += s[i];
                     condition = "name";
                 }
-                else if (condition == "name" or in(conditions, condition))
+                else if (in(conditions, condition))
                 {
                     now += s[i];
                     condition = "name";
+                }
+
+                // Обработка коментариия, который начинается с ;
+                if (s[i] == ';') {
+                    condition = "start";
+                    now = "";
+                    break;
                 }
                 i++;
             }
@@ -450,10 +458,17 @@ int main()
         cout << token[i] << ' ';
     cout << endl;
     // Вывод чисел в number_table
+    cout << "Токены чисел" << endl;
     map<string, float>::iterator it = number_table.begin();
     for (i = 0; it != number_table.end(); it++, i++)
     { // выводим их
-        cout << i << ") Ключ " << it->first << ", значение " << it->second << endl;
+        cout << i << ") Токен " << it->first << ", значение " << it->second << endl;
+    }
+    cout << '\n' << "Токены имён переменных" << endl;
+    map<string, string>::iterator it2 = name_table.begin();
+    for (i = 0; it2 != name_table.end(); it2++, i++)
+    { // выводим их
+        cout << i << ") Токен " << it2->second << ", значение " << it2->first << endl;
     }
     return 0;
 }
