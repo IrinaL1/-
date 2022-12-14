@@ -114,7 +114,25 @@ int main()
         {"<=",      {{'l',{"err","-1","0"}},   {'n',{"err","-1","0"}},               {')',{"push_s","start","-"}}, {' ',{"push_s","start","0"}}, {},                       {},                       {'.',{"err","-1","0"}},      {},{},{},{},{},{},{},{}}},
         {"coment",  {{'l',{"0","coment","0"}}, {'n',{"0","coment","0"}},             {')',{"push_s","start","0"}}, {' ',{"0","coment","0"}},     {},                       {},                       {'.',{"0","coment","0"}},    {},{},{},{},{},{},{},{}}}
     };
-    
+    ifstream file("input.txt");
+    if (!file)
+    {
+        cout << "Ошибка: файл не открылся\n";
+        return -1;
+    }
+    else
+    {
+        char c;
+        vector <string> buffer;
+        while (!file.eof()){
+            c = file.get();
+            if(isalpha(c)) c = 'l';
+            if(isdigit(c)) c = 'n';
+            buffer = transition_table[condition][c];
+            
+        }
+    }
+    file.close();
     cout << num_float_neg(double(-12), '2', dec_kol) << '\n';
     cout << double(12) << '\n';
 
