@@ -1,8 +1,8 @@
 (
-    car '(1 2 3);Привет
-    ; я лисп
+    car '(1 2 3);Hello
+    ; I'm lisp
 )
 (10)
-(cond;условный оператор 
+(cond;opperator 
 (d 4 /=) (print (/ d 4)))
 
