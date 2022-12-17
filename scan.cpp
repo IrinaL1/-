@@ -8,6 +8,7 @@
 
 using namespace std;
 //проверка вхождения ...?
+/*
 bool in(vector<char> a, char b) 
 {
     for (int i = 0; i < a.size(); i++)
@@ -27,7 +28,7 @@ bool in(vector<string> a, string b)
     }
     return false;
 }
-
+*/
 //функция ошибки
 int err()
 {
@@ -60,6 +61,42 @@ double itof(int buf_int)
     return double(buf_int);
 }
 
+// добавляем токен числа в выходную последовательность в виде +n или -n, где n - само число
+vector<string> push_n(vector<string> token, double buf_num){
+    if (buf_num < 0) token.push_back("-" + to_string(buf_num));
+    else token.push_back("+" + to_string(buf_num));
+    return token;
+}
+vector<string> push_n(vector<string> token, int buf_num){
+    if (buf_num < 0) token.push_back("-" + to_string(buf_num));
+    else token.push_back("+" + to_string(buf_num));
+    return token;
+}
+
+// добавляем токен имени переменной в выходную последовательность,(внутри проверяем спец. имен и имен переменных)
+vector<string> push_w(vector<string> token, string buf, map<string, string> *name_table, map<string, string> special_names){
+    if (special_names.count(buf) > 0) token.push_back(special_names[buf]);
+    else if ((*name_table).count(buf) > 0) token.push_back((*name_table)[buf]);
+    else{
+        int count = (*name_table).size() + 1;
+        (*name_table)[buf] = "0" + to_string(count);
+        token.push_back((*name_table)[buf]);
+    }
+    return token;
+}
+
+// добавить символ {'(', ')', '*', '+', '=',} в выходную последовательность
+vector<string> push_s(vector<string> token, string c, map<string,string> simvol_token){
+    token.push_back(simvol_token[c]);
+    return token;
+}
+
+//добавить символ из буфера
+vector<string> push_s_b(vector<string> token, string buf, map<string,string> simvol_token){
+    token.push_back(simvol_token[buf]);
+    return token;
+}
+
 //считываем и переводим в float > 0
 //!!!! написать итератор для dec_col в switch
 double num_float_pos(double buf_float, char n, int dec_kol)  //dec_kol - количество знаков после запятой
@@ -77,17 +114,30 @@ double num_float_neg(double buf_float, char n, int dec_kol)
 
 int main()
 {
-    string s, condition = "start", now = "", id_name;
+    string s, condition = "start", buf = "", id_name;
     vector<string> token;
     //таблица имя переменной-токен
     map<string, string> name_table;
     //таблица число-токен
     map<string, float> number_table;
     int i = 0, count_name = 1, count_number = 1, buf_int = 0, dec_kol = 1;
-    float buf_float;
+    double buf_float = 0;
+    map<string,string> simvol_token = { {"(", "s1"},
+                                        {")", "s2"},
+                                        {"+", "s3"},
+                                        {"*", "s4"},
+                                        {"=", "s5"},
+                                        {"-", "s6"},
+                                        {">", "s7"},
+                                        {"<", "s8"},
+                                        {"/", "s9"},
+                                        {">=", "s10"},
+                                        {"<=", "s11"},
+                                        {"/=", "s12"},
+   };
     //таблица спец имён-токен
     map<string, string> special_names = {{"defun","13"} /*токен = 3*/,
-                                        {"print","11"} /*токен = 1*/,
+                                         {"print","11"} /*токен = 1*/,
                                          {"setq","12"} /*токен = 2*/,
                                          {"cond","17"} /*токен 7*/,
                                          {"car","15"} /*токен 5*/,
@@ -122,18 +172,80 @@ int main()
     }
     else
     {
-        char c;
+        char c, c_in;
+        bool flag = true;
         vector <string> buffer;
         while (!file.eof()){
-            c = file.get();
+            if (flag){
+                c = file.get();
+                c_in = c;
+            }
             if(isalpha(c)) c = 'l';
             if(isdigit(c)) c = 'n';
             buffer = transition_table[condition][c];
-            
+            condition = buffer[1];
+            if (buffer[0] == "add"){
+                buf = add(buf, c_in);
+            }
+            else if (buffer[0] == "push_w"){
+                token = push_w(token, buf, &name_table, special_names);
+            }
+            else if (buffer[0] == "num_int_pos"){
+                buf_int = num_int_pos(buf_int, c_in);
+            }
+            else if (buffer[0] == "num_int_neg"){
+                buf_int = num_int_neg(buf_int, c_in);
+            }
+            else if (buffer[0] == "num_float_pos"){
+                buf_float = num_float_pos(buf_float, c_in, dec_kol);
+                dec_kol++;
+            }
+            else if (buffer[0] == "num_float_neg"){
+                buf_float = num_float_neg(buf_float, c_in, dec_kol);
+                dec_kol++;
+            }
+            else if (buffer[0] == "itof"){
+                buf_float = itof(buf_int);
+            }
+            else if (buffer[0] == "push_n"){
+                if (buf_float == 0) token = push_n(token, buf_int);
+                else token = push_n(token, buf_float);
+                buf_int = 0;
+                buf_float = 0;
+                dec_kol = 1;
+            }
+            else if (buffer[0] == "push_s"){
+                token = push_s(token, to_string(c_in), simvol_token);
+            }
+            else if (buffer[0] == "push_s_b"){
+                token = push_s_b(token, buf, simvol_token);
+            }
+            else if (buffer[0] == "err"){
+                err();
+                return -1;
+            }
+            if (buffer[2] == "-") {
+                flag = false;
+                continue;
+            }
+            flag = true;
         }
     }
     file.close();
     cout << num_float_neg(double(-12), '2', dec_kol) << '\n';
     cout << double(12) << '\n';
-
+    cout << token.size() << '\n'
+         << '\n';
+    // Вывод самих токенов
+    for (i = 0; i < token.size(); i++)
+        cout << token[i] << ' ';
+    cout << endl;
+    // Вывод чисел в number_table
+    cout << '\n' << "Токены имён переменных" << endl;
+    map<string, string>::iterator it2 = name_table.begin();
+    for (i = 0; it2 != name_table.end(); it2++, i++)
+    { // выводим их
+        cout << i << ") Токен " << it2->second << ", значение " << it2->first << endl;
+    }
+return 0;
 }
