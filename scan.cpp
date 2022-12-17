@@ -85,7 +85,7 @@ vector<string> push_w(vector<string> token, string buf, map<string, string> *nam
     return token;
 }
 
-// добавить символ {'(', ')', '*', '+', '=',} в выходную последовательность
+// добавить символ {'(', ')', '*', '+', '=','''} в выходную последовательность
 vector<string> push_s(vector<string> token, string c, map<string,string> simvol_token){
     token.push_back(simvol_token[c]);
     return token;
@@ -98,7 +98,6 @@ vector<string> push_s_b(vector<string> token, string buf, map<string,string> sim
 }
 
 //считываем и переводим в float > 0
-//!!!! написать итератор для dec_col в switch
 double num_float_pos(double buf_float, char n, int dec_kol)  //dec_kol - количество знаков после запятой
 {
     buf_float += double((n - '0'))/pow(10, dec_kol);
