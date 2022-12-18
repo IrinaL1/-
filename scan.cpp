@@ -264,7 +264,7 @@ int main()
     token.push_back("#");
     flag = true;
     i = 0;
-    condition = "";
+    vector<string> stek_condition = {""};
     int size = 0, j = 0;
     cout << stek[stek.size()-1];
     while (flag){
@@ -272,41 +272,49 @@ int main()
 /*1*/   if (stek[size-1] == "OP" && token[i] == "#"){
             stek.pop_back();
             stek.push_back("PROG");
+            stek_condition.pop_back();
             continue;
         }
 /*2*/   else if(size >= 4 && stek[size-1] == "s2" && stek[size-2] == "OP" && stek[size-3] == "12" && stek[size-4]=="s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 4; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*3*/   else if(size >= 7 && stek[size-1] == "s2" && stek[size-2] == "s2" && stek[size-3] == "ARG" && stek[size-4]=="s1" && stek[size-5][0] == '0' && stek[size-6]=="13" && stek[size-7]=="s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 7; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*4*/   else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "F" && stek[size-3][0] == '0' && stek[size-4]=="13" && stek[size-5]=="s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*5*/   else if(size >= 6 && stek[size-1] == "s2" && stek[size-2] == "OP" && stek[size-3] == "A" && stek[size-4][0] == '0' && stek[size-5]=="11" && stek[size-6]=="s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 6; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*6*/   else if(size >= 4 && stek[size-1] == "s2" && stek[size-2] == "MOP" && stek[size-3] == "14" && stek[size-4] == "s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 4; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*7*/   else if(size >= 4 && stek[size-1] == "s2" && stek[size-2] == "OP" && stek[size-3] == "12" && stek[size-4]=="s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 4; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*8*/   else if(size >= 4 && stek[size-1] == "s2" && stek[size-2] == "OP" && stek[size-3] == "16" && stek[size-4]=="s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 4; j++) stek.pop_back();
             stek.push_back("OP");
+            stek_condition.pop_back();
             continue;
         }
 /*9*/   else if(size >= 2 && stek[size-1] == "A" && stek[size-2] == "s13" && in({"#","s1","s2"}, token[i])){
@@ -352,29 +360,34 @@ int main()
 /*17*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "E" && stek[size-3] == "M" && stek[size-4] == "s5" && stek[size-5] == "s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("M");
+            stek_condition.pop_back();
             continue;
         }
 /*18*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "E" && stek[size-3] == "M" && stek[size-4] == "s7" && stek[size-5] == "s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("M");
+            stek_condition.pop_back();
             continue;
         }
 /*19*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "E" && stek[size-3] == "M" && stek[size-4] == "s11" && stek[size-5] == "s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("M");
+            stek_condition.pop_back();
             continue;
         }
 /*20*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "E" && stek[size-3] == "M" && stek[size-4] == "s10" && stek[size-5] == "s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("M");
+            stek_condition.pop_back();
             continue;
         }
 /*21*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "E" && stek[size-3] == "M" && stek[size-4] == "s12" && stek[size-5] == "s1" && in({"#","s1","s2"}, token[i])){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("M");
+            stek_condition.pop_back();
             continue;
         }
-/*22*/  else if(size >= 1 && stek[size-1] == "E" && in({"=", "/=", "<", "<=", ">", ">="}, condition)){
+/*22*/  else if(size >= 1 && stek[size-1] == "E" && in({"s5", "s12", "s8", "s11", "s7", "s10"}, stek_condition[stek_condition.size() - 1])){
             for(j = 0; j < 1; j++) stek.pop_back();
             stek.push_back("M");
             continue;
@@ -382,16 +395,26 @@ int main()
 /*23*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "T" && stek[size-3] == "E" && stek[size-4] == "s3" && stek[size-5] == "s1" && (in({"#","s1","s2"}, token[i]) || in({'0','-','+'},token[i][0]))){
             for(j = 0; j < 5; j++) stek.pop_back();
             stek.push_back("E");
+            stek_condition.pop_back();
             continue;
         }
 /*24*/  else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "T" && stek[size-3] == "E" && stek[size-4] == "s6" && stek[size-5] == "s1" && (in({"#","s1","s2"}, token[i]) || in({'0','-','+'},token[i][0]))){
             for(j = 0; j < 5; j++) stek.pop_back();
+            stek.push_back("E");
+            stek_condition.pop_back();
+            continue;
+        }
+/*25*/  else if(size >= 1 && stek[size-1] == "T" && in({"s3","s6","s5", "s12", "s8", "s11", "s7", "s10"}, stek_condition[stek_condition.size() - 1])){
+            for(j = 0; j < 1; j++) stek.pop_back();
             stek.push_back("E");
             continue;
         }
 /*в стэк*/
         else if(i < token.size()){
             stek.push_back(token[i]);
+            if (in({"11","12","13","14","15","16","17","18","s4","s3","s6","s9","s12","s8","s11","s5","s7","s10"},token[i])){
+                stek_condition.push_back(token[i]);
+            }
             i++;
             continue;
         }
