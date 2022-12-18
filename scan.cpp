@@ -213,11 +213,13 @@ int main()
                 buf_int = 0;
                 buf_float = 0;
                 dec_kol = 1;
+                buf = "";
             }
             else if (buffer[0] == "push_s"){
                 string s_in;
                 s_in += c_in;
                 token = push_s(token, s_in, simvol_token);
+                buf = "";
             }
             else if (buffer[0] == "push_s_b"){
                 token = push_s_b(token, buf, simvol_token);
@@ -274,7 +276,11 @@ int main()
 /*1*/   if (stek[size-1] == "OP" && token[i] == "#"){
             stek.pop_back();
             stek.push_back("PROG");
-            stek_condition.pop_back();
+            continue;
+        }
+/*1.1*/ else if (size >= 2 && stek[size-1] == "PROG" && stek[size-2] == "OP" && token[i] == "#"){
+            for(j = 0; j < 2; j++) stek.pop_back();
+            stek.push_back("PROG");
             continue;
         }
 /*2*/   else if(size >= 4 && stek[size-1] == "s2" && stek[size-2] == "OP" && stek[size-3] == "12" && stek[size-4]=="s1" && in({"#","s1","s2"}, token[i])){
@@ -340,7 +346,7 @@ int main()
             stek.push_back("MOP");
             continue;
         }
-/*13+*/  else if(size >= 1 && stek[size-1] == "M" && in({"s2","#"}, token[i])){
+/*13+*/  else if(size >= 1 && stek[size-1] == "M" && (in({"s2","#"}, token[i]) || stek_condition[stek_condition.size()-1] == "")){
             for(j = 0; j < 1; j++) stek.pop_back();
             stek.push_back("OP");
             continue;
@@ -474,7 +480,7 @@ int main()
 /*в стэк*/
         else if(i < token.size()){
             stek.push_back(token[i]);
-            if (in({"11","12","13","14","15","16","17","18","s4","s3","s6","s9","s12","s8","s11","s5","s7","s10","s13"},token[i])){
+            if (in({"11","12","13","14","15","16","s4","s3","s6","s9","s12","s8","s11","s5","s7","s10","s13"},token[i])){
                 stek_condition.push_back(token[i]);
             }
             i++;
