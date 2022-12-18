@@ -4,7 +4,10 @@
 )
 (+ 10 2)
 (cond;opperator
-((/= d 4.06) (print (/ d -4)))
-(t (* 3 a)))
-
-
+    ((/= d 4.06) (print (/ d -4)))
+    (t (* 3 a)))
+(defun func (x)
+    (cond (nil 0)
+        ((>= x 5) (cdr x))
+    )
+)
