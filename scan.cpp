@@ -18,7 +18,7 @@ bool in(vector<char> a, char b)
     }
     return false;
 }
-
+*/
 bool in(vector<string> a, string b)
 {
     for (int i = 0; i < a.size(); i++)
@@ -28,7 +28,7 @@ bool in(vector<string> a, string b)
     }
     return false;
 }
-*/
+
 //функция ошибки
 int err()
 {
@@ -164,6 +164,7 @@ int main()
         {"<=",      {{'l',{"err","-1","0"}},   {'n',{"err","-1","0"}},               {')',{"push_s_b","start","-"}}, {' ',{"push_s_b","start","0"}}, {'\n',{"push_s_b", "start", "0"}}, {';',{"push_s_b", "coment", "0"}},   {'.',{"err","-1","0"}},      {'-',{"err", "-1", "0"}},  {'/',{"err", "-1", "0"}},{'>',{"err", "-1", "0"}},  {'<',{"err", "-1", "0"}},   {'=',{"err", "-1", "0"}},     {'+',{"err", "-1", "0"}},     {'*',{"err", "-1", "0"}},     {'(',{"err", "-1", "0"}},     {'\'',{"err", "-1","0"}}}},
         {"coment",  {{'l',{"0","coment","0"}}, {'n',{"0","coment","0"}},             {')',{"0","coment","0"}}, {' ',{"0","coment","0"}},             {'\n',{"0", "start", "0"}},        {';',{"0", "coment", "0"}},         {'.',{"0","coment","0"}},    {'-',{"0", "coment", "0"}},{'/',{"0", "coment", "0"}},{'>',{"0", "coment", "0"}},{'<',{"0", "coment", "0"}}, {'=',{"0", "coment", "0"}}, {'+',{"0", "coment", "0"}},   {'*',{"0", "coment", "0"}},   {'(',{"0", "coment", "0"}},   {'\'',{"0", "coment","0"}}}}
     };
+    bool flag = true;
     ifstream file("input.txt");
     if (!file)
     {
@@ -173,7 +174,6 @@ int main()
     else
     {
         char c, c_in;
-        bool flag = true;
         vector <string> buffer;
         while (!file.eof()){
             if (flag){
@@ -236,8 +236,7 @@ int main()
         }
     }
     file.close();
-    cout << num_float_neg(double(-12), '2', dec_kol) << '\n';
-    cout << double(12) << '\n';
+
     cout << token.size() << '\n'
          << '\n';
     // Вывод самих токенов
@@ -262,5 +261,51 @@ int main()
     { // выводим их
         cout << i << ") Токен " << it2->second << ", значение " << it2->first << endl;
     }
+    vector <string> stek = {"#"};
+    token.push_back("#");
+    flag = true;
+    i = 0;
+    condition = "";
+    int size = 0, j = 0;
+    cout << stek[stek.size()-1];
+    while (flag){
+        size = stek.size();
+/*1*/   if (stek[size-1] == "OP" && token[i] == "#"){
+            stek.pop_back();
+            stek.push_back("PROG");
+            continue;
+        }
+/*2*/   else if(size >= 4 && stek[size-1] == "s2" && stek[size-2] == "OP" && stek[size-3] == "12" && stek[size-4]=="s1" && in({"#","(",")"}, token[i])){
+            for(j = 0; j < 4; j++) stek.pop_back();
+            stek.push_back("OP");
+            continue;
+        }
+/*3*/   else if(size >= 7 && stek[size-1] == "s2" && stek[size-2] == "s2" && stek[size-3] == "ARG" && stek[size-4]=="s1" && stek[size-5][0] == '0' && stek[size-6]=="13" && stek[size-7]=="s1" && in({"#","(",")"}, token[i])){
+            for(j = 0; j < 7; j++) stek.pop_back();
+            stek.push_back("OP");
+            continue;
+        }
+/*4*/   else if(size >= 5 && stek[size-1] == "s2" && stek[size-2] == "F" && stek[size-3][0] == '0' && stek[size-4]=="13" && stek[size-5]=="s1" && in({"#","(",")"}, token[i])){
+            for(j = 0; j < 5; j++) stek.pop_back();
+            stek.push_back("OP");
+            continue;
+        }
+/*в стэк*/
+        else if(i < token.size()){
+            stek.push_back(token[i]);
+            i++;
+            continue;
+        }
+        else{
+            break;
+        }
+    }
+if(stek.size() == 3 && stek[0] == "#" && stek[1] == "PROG" && stek[2] == "#"){
+    cout << "Синтаксис программы верен";
+}
+else{
+    cout << "Ошибка в синтаксисе программы";
+    return -1;
+}
 return 0;
 }
