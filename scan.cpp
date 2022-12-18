@@ -263,7 +263,7 @@ int main()
 
 
     vector <string> stek = {"#"};
-    token[token.size() - 1] = "#";
+    token.push_back("#");
     flag = true;
     i = 0;
     vector<string> stek_condition = {""};
